@@ -6,6 +6,74 @@ def main():
     mode=os.getenv('MAGALU_ENV_MODE','legacy')
     template=Path('docker/wso2/deployment.isolated.template.toml' if mode=='isolated' else 'docker/wso2/deployment.template.toml')
     result=template.read_text()
+
+    public_url=os.environ.get(
+        'IS_PUBLIC_URL','https://localhost:9543'
+    ).rstrip('/')
+
+    if public_url != 'https://localhost:9543':
+        import json
+        import re
+        from urllib.parse import urlsplit
+
+        parsed=urlsplit(public_url)
+        hostname=parsed.hostname
+
+        valid=(
+            parsed.scheme == 'https'
+            and hostname is not None
+            and parsed.netloc == hostname
+            and not parsed.path
+            and not parsed.query
+            and not parsed.fragment
+            and re.fullmatch(
+                r'[a-z0-9-]+(?:[.][a-z0-9-]+)+',
+                hostname
+            ) is not None
+        )
+
+        if not valid:
+            raise SystemExit(
+                'IS_PUBLIC_URL must be an HTTPS DNS origin '
+                'without a port, path or credentials'
+            )
+
+        replacements={
+            'hostname = "localhost"':
+                'hostname = '+json.dumps(hostname),
+            'base_path = "https://$ref{server.hostname}:${carbon.management.port}"':
+                'base_path = '+json.dumps(public_url),
+        }
+
+        for old,new in replacements.items():
+            if result.count(old)!=1:
+                raise SystemExit(
+                    'Unexpected WSO2 template structure: '+old
+                )
+            result=result.replace(old,new,1)
+
+        sections=(
+            '[transport.https.properties]',
+            '[console]',
+            '[myaccount]',
+        )
+
+        if any(section in result for section in sections):
+            raise SystemExit(
+                'WSO2 template already defines a public section; '
+                'review before changing it'
+            )
+
+        result += (
+            '\n[transport.https.properties]\n'
+            'proxyPort = 443\n'
+            '\n[console]\n'
+            'callback_url = '
+            +json.dumps(public_url+'/console')+'\n'
+            '\n[myaccount]\n'
+            'callback_url = '
+            +json.dumps(public_url+'/myaccount')+'\n'
+        )
     for key in ('IS_ADMIN_PASSWORD','IS_DB_USER','IS_DB_PASSWORD'):
         if '${'+key+'}' not in result:
             continue

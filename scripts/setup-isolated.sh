@@ -62,6 +62,6 @@ if first and path.exists():
 path.write_text('\n'.join(rows)+'\n')
 path.chmod(0o600)
 print('Configured isolated stack: 2 root tenants, 3 brands, 9543/8180/8543 host ports.')
-print('WSO2 super-admin: admin/admin (local development only).')
+print('WSO2 administrator credentials are stored privately in .env.')
 print('Fresh credentials generated for independent databases.' if first else 'Existing stack secrets preserved.')
 PY
