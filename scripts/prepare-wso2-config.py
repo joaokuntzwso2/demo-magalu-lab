@@ -79,15 +79,31 @@ def main():
                 'review before changing it'
             )
 
+        # Declare [console] before its existing child table.
+        console_marker = '[console.flows.scopes]'
+        console_block = (
+            '[console]\n'
+            'callback_url = '
+            + json.dumps(public_url + '/console') + '\n\n'
+        )
+
+        if mode == 'isolated':
+            if result.count(console_marker) != 1:
+                raise SystemExit(
+                    'Unexpected isolated template: console scopes missing'
+                )
+            result = result.replace(
+                console_marker, console_block + console_marker, 1
+            )
+        else:
+            result += '\n' + console_block
+
         result += (
             '\n[transport.https.properties]\n'
             'proxyPort = 443\n'
-            '\n[console]\n'
-            'callback_url = '
-            +json.dumps(public_url+'/console')+'\n'
             '\n[myaccount]\n'
             'callback_url = '
-            +json.dumps(public_url+'/myaccount')+'\n'
+            + json.dumps(public_url + '/myaccount') + '\n'
         )
     for key in ('IS_ADMIN_PASSWORD','IS_DB_USER','IS_DB_PASSWORD'):
         if '${'+key+'}' not in result:

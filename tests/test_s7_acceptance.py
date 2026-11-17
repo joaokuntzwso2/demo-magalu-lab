@@ -58,6 +58,7 @@ def _environment(tmp_path,monkeypatch):
     jwk=json.loads(jwt.algorithms.RSAAlgorithm.to_jwk(key.public_key()))
     jwk['kid']='real-provider-key-test-fixture'
     p=tmp_path/'public-jwks.json';p.write_text(json.dumps({'keys':[jwk]}))
+    p.chmod(0o600)
     monkeypatch.setenv('S7_PROVIDER_JWKS_FILE',str(p))
     monkeypatch.setenv('S7_PROVIDER_ISSUER','https://real-verifier.example.test')
     monkeypatch.setenv('S7_PROVIDER_AUDIENCE','magalu-ciam-rfp-s7')
