@@ -7,7 +7,7 @@ python3 - <<'PY'
 from pathlib import Path
 import secrets,re
 path=Path('.env')
-orig=path.read_text() if path.exists() else Path('.env.example').read_text()
+orig=path.read_text() if path.exists() else ''
 rows=orig.splitlines()
 values={}
 for line in rows:
@@ -19,10 +19,10 @@ config={
  'MAGALU_ENV_MODE':'isolated',
  'COMPOSE_PROJECT_NAME':'magalu-ciam73-s7lab',
  'IS_ADMIN_USERNAME':'admin',
- 'IS_ADMIN_PASSWORD':'admin',
- 'IS_PUBLIC_URL':'https://localhost:9543',
+ 'IS_ADMIN_PASSWORD':values.get('IS_ADMIN_PASSWORD') or secrets.token_hex(32),
+ 'IS_PUBLIC_URL':values.get('IS_PUBLIC_URL') or 'https://localhost:9543',
  'IS_INTERNAL_URL':'https://is:9543',
- 'DEMO_PUBLIC_URL':'http://localhost:8180',
+ 'DEMO_PUBLIC_URL':values.get('DEMO_PUBLIC_URL') or 'http://localhost:8180',
  'DEMO_HOST_PORT':'8180','WSO2_HOST_PORT':'9543',
  'SECTOR_HOST_PORT':'8543',
  'WSO2_IMAGE':('registry.wso2.com/wso2-is/is:7.3.0.18' if first else values.get('WSO2_IMAGE','registry.wso2.com/wso2-is/is:7.3.0.18')),

@@ -22,7 +22,9 @@ class TestSixStorefronts(unittest.TestCase):
         self.assertIn("CLIENT_KEY=f'{BRAND}:{CHANNEL}'",p)
         self.assertIn("COOKIE=f'magalu_{BRAND}_{CHANNEL}_sid'",p)
         self.assertIn('session_cookie=COOKIE',p)
-        self.assertIn("'prompt':'login'",p)
+        self.assertIn("'prompt':('login consent'",p)
+        self.assertIn("else 'login'",p)
+        self.assertIn("params['prompt'] = 'login'",p)
         self.assertIn("'max_age':'0'",p)
         self.assertIn("request.session.clear()",p)
 

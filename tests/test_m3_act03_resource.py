@@ -80,9 +80,9 @@ def test_fallback_audience_never_claims_dedicated_api(tmp_path):
     assert v['management_api_readback_verified'] is False
     cfg=tmp_path/'resource-audience.txt';cfg.write_text(AUDIENCE)
     with pytest.raises(ValueError,match='readback'):
-        resource.resource_audience_config(path,cfg)
+        resource.resource_audience_config(path,cfg,tmp_path/'missing-readback.json')
     cfg.write_text('')
-    with pytest.raises(ValueError):resource.resource_audience_config(path,cfg)
+    with pytest.raises(ValueError):resource.resource_audience_config(path,cfg,tmp_path/'missing-readback.json')
 
 
 def test_probe_never_reports_401_as_approval_denial():
