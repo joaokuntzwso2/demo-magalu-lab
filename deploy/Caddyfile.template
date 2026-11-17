@@ -1,0 +1,37 @@
+# Replace DEMO_DOMAIN with your DNS zone, e.g. demo.example.com.
+# All eight DNS names must resolve to this EC2 instance's Elastic IP.
+# Caddy terminates public TLS. WSO2's self-signed upstream cert is ignored ONLY
+# on the EC2 loopback connection; never use this setting for remote upstreams.
+# HTTPS management access must also be restricted at the AWS security group.
+
+auth.DEMO_DOMAIN {
+    reverse_proxy https://127.0.0.1:9543 {
+        header_up Host {host}
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
+lab.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8180
+}
+
+magalu-web.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8181
+}
+magalu-mobile.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8182
+}
+netshoes-web.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8183
+}
+netshoes-mobile.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8184
+}
+pay-web.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8185
+}
+pay-mobile.DEMO_DOMAIN {
+    reverse_proxy 127.0.0.1:8186
+}

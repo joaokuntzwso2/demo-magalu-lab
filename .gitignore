@@ -1,0 +1,191 @@
+.env
+__pycache__/
+.pytest_cache/
+*.pyc
+generated/*
+!generated/.gitkeep
+.vscode/
+artifacts/results/*
+
+.venv-m3/
+
+# ========================================
+# Environment and local configuration
+# ========================================
+.env
+.env.*
+*.env
+*.env.*
+env/
+venv/
+.venv/
+ENV/
+
+# ========================================
+# Credentials, tokens and private keys
+# ========================================
+*secrets*.json
+*credentials*.json
+*.jwt
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdb
+
+# Sensitive local documentation
+/docs/USER_LOGIN_CREDENTIALS.md
+
+# ========================================
+# Generated runtime and provisioning data
+# ========================================
+/generated/
+
+# ========================================
+# Backups and temporary copies
+# ========================================
+*backup*
+*BACKUP*
+*.bak
+*.bak.*
+*.old
+*.orig
+*.save
+*.before_*
+*.pre_*
+*~
+*.swp
+*.swo
+
+# ========================================
+# Archives
+# ========================================
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# ========================================
+# Python
+# ========================================
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ========================================
+# macOS and IDE
+# ========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+.idea/
+.vscode/
+
+# ========================================
+# Local logs and runtime files
+# ========================================
+*.log
+logs/
+*.pid
+*.sqlite
+*.sqlite3
+
+# ===== Local credentials and secrets (NEVER commit) =====
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.sample
+!**/.env.template
+**/secrets/
+**/private/
+**/*-secrets.json
+**/tenant-secrets.json
+**/user-secrets.json
+**/bootstrap-report.json
+**/credentials.json
+**/*credentials*.private.json
+**/*token-capture*
+**/*jwt-capture*
+**/*access-token*
+**/*refresh-token*
+**/id_rsa
+**/id_ed25519
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdbx
+
+# ===== Generated runtime configuration, databases and evidence =====
+/generated/
+/backups/
+/results/
+/evidence/
+/artifacts/private/
+/.state/
+/.runtime/
+/data/postgres/
+/data/ldap/
+**/pgdata/
+**/ldapdata/
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+*.tar.gz
+*.log
+*.log.*
+
+# ===== Developer and build files =====
+.DS_Store
+.idea/
+.vscode/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+dist/
+build/
+*.egg-info/
+.coverage
+htmlcov/
+
+# ===== AWS / Terraform state & machine-specific settings =====
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.auto.tfvars
+!*.tfvars.example
+*.tfplan
+.override.tf
+.override.tf.json
+terraform.rc
+.terraformrc
+.aws/
+
+# Private deployment configuration
+/deployment.agentidentity.toml
+
+/.env.example

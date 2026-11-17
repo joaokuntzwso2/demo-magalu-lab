@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Roteiro de Testes · Seção 7{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="/static/lab_hub.css">
+<div class="s7lab" id="s7lab">
+  <div class="s7lab-hero">
+    <div class="s7lab-kicker">MAGALU LOGIN / RFP SEÇÃO 7</div>
+    <div class="s7lab-heading"><div>
+      <h1>Laboratório de evidências<span>.</span></h1>
+      <p>Um roteiro de demonstração para provar cada requisito com comportamento real — do login ao isolamento, consentimento e delegação.</p>
+    </div><div class="s7lab-version"><span class="s7lab-led"></span><b>WSO2 IS 7.3</b><small>AMBIENTE LOCAL · PROVA TÉCNICA</small></div></div>
+    <div class="s7lab-highlights"><div><strong>02</strong><span>root tenants</span></div><div><strong>03</strong><span>marcas</span></div><div><strong>06</strong><span>clientes OIDC</span></div><div><strong>{{ tests | selectattr('available') | list | length }}/{{ tests | length }}</strong><span>rotas cadastradas</span></div></div>
+  </div>
+
+  <div class="s7lab-callout" role="note"><span aria-hidden="true">◎</span><div><b>Critério de aceite</b><p>“Rota disponível” significa apenas que o teste pode ser iniciado. Um PASS só existe depois da execução contra WSO2, com evidência verificável. As ações protegidas permanecem no workbench original.</p></div></div>
+
+  <div class="s7lab-toolbar">
+    <div class="s7lab-search-wrap"><span aria-hidden="true">⌕</span><input type="search" id="s7lab-search" placeholder="Buscar requisito, aplicação ou evidência…" aria-label="Buscar testes"></div>
+    <div class="s7lab-count" id="s7lab-count">{{ tests | length }} testes mapeados</div>
+  </div>
+  <div class="s7lab-rail" role="navigation" aria-label="Etapas da demonstração">
+    <button type="button" data-filter="all" class="selected" aria-pressed="true">Todos os testes</button>
+    {% for p in phases %}<button type="button" data-filter="{{ p[0] }}" aria-pressed="false"><span>{{ p[0] }}</span> {{ p[1] }}</button>{% endfor %}
+  </div>
+
+  <div class="s7lab-workspace">
+    <section class="s7lab-catalog" aria-label="Catálogo de testes">
+      {% for phase in phases %}
+      {% set phase_tests = tests | selectattr('phase','equalto',phase[0]) | list %}
+      {% if phase_tests %}
+      <section class="s7lab-chapter" data-chapter="{{ phase[0] }}">
+        <div class="s7lab-chapter-title"><div><span>CAPÍTULO {{ phase[0] }}</span><h2>{{ phase[1] }}</h2><p>{{ phase[2] }}</p></div><i>{{ phase_tests | length }} etapas</i></div>
+        {% for t in phase_tests %}
+        <article class="s7lab-test" data-phase="{{ t.phase }}" data-search="{{ (t.title ~ ' ' ~ t.summary ~ ' ' ~ t.code ~ ' ' ~ t.requirement)|lower }}">
+          <div class="s7lab-test-top"><span class="s7lab-code">{{ t.code }}</span>
+          {% if t.available %}<span class="s7lab-available">● Rota cadastrada</span>{% else %}<span class="s7lab-unavailable">Rota não encontrada</span>{% endif %}</div>
+          <h3>{{ t.title }}</h3><p class="s7lab-summary">{{ t.summary }}</p>
+          <details><summary>O que testar e qual evidência obter</summary>
+            <dl><dt>Requisito</dt><dd>{{ t.requirement }}</dd><dt>Passos</dt><dd>{{ t.steps }}</dd><dt>Evidência</dt><dd>{{ t.evidence }}</dd></dl>
+          </details>
+          <div class="s7lab-actions">
+            {% if t.available %}
+            {% if t.kind == 'page' and t.path in ['/', '/pairwise', '/m2m', '/m3/consent'] %}
+            <button type="button" class="s7lab-btn primary s7lab-preview" data-url="{{ t.path }}" data-name="{{ t.title }}">Abrir na área de trabalho</button>
+            {% endif %}
+            <a href="{{ t.link }}" class="s7lab-btn" target="_blank" rel="noopener noreferrer">{{ 'Abrir aplicação' if t.kind == 'external' else 'Executar teste' }} ↗</a>
+            {% else %}<span class="s7lab-btn disabled" aria-disabled="true">Não disponível nesta instalação</span>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </section>
+      {% endif %}
+      {% endfor %}
+      <section class="s7lab-chapter s7lab-extra" data-chapter="extra" {% if not additional %}hidden{% endif %}>
+        <div class="s7lab-chapter-title"><div><span>DESCOBERTA AUTOMÁTICA</span><h2>Outras páginas existentes</h2><p>Rotas GET adicionadas ao servidor e ainda não classificadas no roteiro.</p></div></div>
+        {% for e in additional %}<article class="s7lab-test" data-phase="extra" data-search="{{e.title|lower}} {{e.path|lower}}"><h3>{{e.title}}</h3><p class="s7lab-summary"><code>{{e.path}}</code>{% if e.protected %} · Requer uma sessão/autorização prévia{% endif %}</p><a class="s7lab-btn" href="{{e.path}}" target="_blank" rel="noopener noreferrer">Abrir página ↗</a></article>{% endfor %}
+      </section>
+      <section class="s7lab-chapter s7lab-deferred" data-chapter="deferred">
+        <div class="s7lab-chapter-title"><div><span>DECISÕES DE ESCOPO</span><h2>Fora desta etapa</h2><p>Não exibir como “aprovado” o que não foi implantado nem medido.</p></div></div>
+        {% for d in deferred %}<article class="s7lab-test" data-phase="deferred" data-search="{{d.name|lower}}"><span class="s7lab-defer-tag">ADIADO</span><h3>{{d.name}}</h3><p class="s7lab-summary">{{d.reason}}</p></article>{% endfor %}
+      </section>
+    </section>
+    <aside class="s7lab-pane" aria-label="Área de execução">
+      <div class="s7lab-pane-heading"><div><small>ÁREA DE TRABALHO</small><h3 id="s7lab-frame-title">Selecione um teste</h3></div><button type="button" id="s7lab-close" hidden aria-label="Fechar área de execução">×</button></div>
+      <div class="s7lab-pane-empty" id="s7lab-pane-empty"><div class="s7lab-bigicon">▣</div><h4>Da hipótese à evidência.</h4><p>Escolha um teste no roteiro. As páginas compatíveis abrem aqui; fluxos com restrições de segurança ou redirecionamentos OIDC são executados em aba própria.</p><div class="s7lab-mini-steps"><span>01 · Preparar</span><span>02 · Executar</span><span>03 · Verificar</span></div></div>
+      <iframe id="s7lab-frame" title="Workbench de teste" hidden referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="s7lab-pane-foot">Operações reais exigem as credenciais, sessões e permissões do respectivo workbench. Não são simuladas neste painel.</div>
+    </aside>
+  </div>
+</div>
+<script src="/static/lab_hub.js" defer></script>
+{% endblock %}
