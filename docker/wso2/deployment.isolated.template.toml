@@ -30,6 +30,14 @@ name = "wso2_shared"
 username = "${IS_DB_USER}"
 password = "${IS_DB_PASSWORD}"
 
+[datasource.AgentIdentity]
+id = "AgentIdentity"
+url = "jdbc:postgresql://identity-db:5432/wso2_agent"
+username = "${IS_DB_USER}"
+password = "${IS_DB_PASSWORD}"
+driver = "org.postgresql.Driver"
+jmx_enable = false
+
 # The 7.3.0.18 image ships a PKCS12 client truststore. Our derived image imports
 # the local sector CA into this same truststore for OIDC sector URI validation.
 [truststore]

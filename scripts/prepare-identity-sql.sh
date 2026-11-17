@@ -8,11 +8,12 @@ mkdir -p "$dest"
 container="$(docker create "$image")"
 trap 'docker rm -v "$container" >/dev/null 2>&1 || true' EXIT
 base=/home/wso2carbon/wso2is-7.3.0
-for part in identity consent shared; do
+for part in identity consent shared agent; do
   case "$part" in
     identity) filename="$base/dbscripts/identity/postgresql.sql";;
     consent) filename="$base/dbscripts/consent/postgresql.sql";;
     shared) filename="$base/dbscripts/postgresql.sql";;
+    agent) filename="$base/dbscripts/identity/agent/postgresql.sql";;
   esac
   docker cp "$container:$filename" "$dest/$part.sql" \
     || { echo "WSO2 distribution missing SQL: $filename" >&2; exit 1; }
@@ -33,4 +34,4 @@ import sys,zipfile
 if not zipfile.is_zipfile(sys.argv[1]):
     raise SystemExit('PostgreSQL JDBC download is not a valid JAR')
 PY
-echo 'Extracted updated WSO2 PostgreSQL identity/shared/consent scripts and JDBC driver.'
+echo 'Extracted updated WSO2 PostgreSQL identity/shared/consent/agent scripts and JDBC driver.'
