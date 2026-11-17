@@ -19,6 +19,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from demo.policy import assurance_level, pairwise_verdict, step_up_decision
 from demo.store import Ledger
+from bootstrap.storefront_ports import storefront_origin
 
 PUBLIC=os.getenv('DEMO_PUBLIC_URL','http://localhost:8080').rstrip('/')
 IS_PUBLIC=os.getenv('IS_PUBLIC_URL','https://localhost:9443').rstrip('/')
@@ -29,7 +30,7 @@ DB=Ledger(os.getenv('CONSENT_DB_DSN','postgresql://ciam:ciam_dev_only@localhost:
 TEMPLATES=Jinja2Templates(directory=str(Path(__file__).parent/'templates'))
 app=FastAPI(title='Magalu Login · CIAM Technical Evaluation',docs_url=None,redoc_url=None)
 app.add_middleware(SessionMiddleware,secret_key=os.getenv('DEMO_SESSION_SECRET','DEV_ONLY_REPLACE'),
-                   same_site='lax',https_only=False,max_age=60*60*8)
+                   same_site='lax',https_only=PUBLIC.startswith('https://'),max_age=60*60*8)
 app.mount('/static',StaticFiles(directory=str(Path(__file__).parent/'static')),name='static')
 # Single-replica demo: key material remains server-side, session cookie contains only a random handle.
 SESSIONS:dict[str,dict]={}
@@ -308,7 +309,11 @@ def home(request:Request):
     # The observation dashboard never creates or modifies an auth session.
     return TEMPLATES.TemplateResponse('home.html', {
         'request':request, 'manifest':manifest(), 'brand':None,
-        'session':{}, 'csrf':''})
+        'session':{}, 'csrf':'',
+        'storefront_urls':{
+            f'{brand}:{channel}':storefront_origin(f'{brand}:{channel}')
+            for brand,channel,_ in STOREFRONTS
+        }})
 
 
 @app.get('/healthz')
@@ -339,7 +344,7 @@ def auth_start(brand:str, channel:str):
     match = next((port for b,c,port in STOREFRONTS if b==brand and c==channel),None)
     if match is None:
         raise HTTPException(404, 'Independent storefront not found')
-    return redirect(f'http://localhost:{match}/login')
+    return redirect(storefront_origin(f'{brand}:{channel}')+'/login')
 
 
 @app.get('/oidc/callback',response_class=HTMLResponse)

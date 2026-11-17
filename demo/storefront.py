@@ -30,6 +30,7 @@ if BRAND not in ('magalu','netshoes','magalupay') or CHANNEL not in ('web','app'
     raise RuntimeError('STORE_BRAND/STORE_CHANNEL must identify exactly one storefront')
 CLIENT_KEY=f'{BRAND}:{CHANNEL}'
 BASE=os.environ.get('STORE_PUBLIC_URL','http://localhost:8181').rstrip('/')
+DEMO_PUBLIC_URL=os.environ.get('DEMO_PUBLIC_URL','http://localhost:8180').rstrip('/')
 ISSUER_PUBLIC=os.environ.get('IS_PUBLIC_URL','https://localhost:9543').rstrip('/')
 ISSUER_INTERNAL=os.environ.get('IS_INTERNAL_URL','https://is:9543').rstrip('/')
 VERIFY=os.environ.get('IS_TLS_VERIFY','false').lower()=='true'
@@ -62,7 +63,7 @@ CATALOG={
 TEMPLATES=Jinja2Templates(directory=str(Path(__file__).parent/'templates'/'storefront'))
 app=FastAPI(title=f'{BRAND.title()} {CHANNEL.upper()} – Magalu Login',docs_url=None,redoc_url=None)
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET, session_cookie=COOKIE,
-                   max_age=8*3600, https_only=False, same_site='lax')
+                   max_age=8*3600, https_only=BASE.startswith('https://'), same_site='lax')
 app.mount('/assets', StaticFiles(directory=str(Path(__file__).parent/'static'/'storefront')), name='assets')
 SESSIONS={}
 DB=Workflow(os.environ.get('CONSENT_DB_DSN','postgresql://ciam:ciam_dev_only@db:5432/ciam'))
@@ -108,6 +109,9 @@ def view(request, notice=None, error=None, code=200):
         'SCOPE_CREATE':SCOPE_CREATE,'SCOPE_APPROVE':SCOPE_APPROVE,'ACR_TOTP':ACR_TOTP,
     }, status_code=code)
 
+
+def section7_return_url(request_id):
+    return DEMO_PUBLIC_URL+'/m3/section7?'+urlencode({'tx':request_id})
 
 def redirect(url):
     return RedirectResponse(url,status_code=303)
@@ -302,7 +306,7 @@ def callback(request:Request,code:str='',state:str='',error:str='',error_descrip
             s.pop('s7_last_failed_tx',None)
             s['principal']=newprincipal
             s['s7_stepup_tx']=pending['request_id']
-            return redirect('http://localhost:8180/m3/section7?tx='+pending['request_id'])
+            return redirect(section7_return_url(pending['request_id']))
         if pending['purpose']=='approval':
             old=s.get('principal')
             if not old or old['sub']!=newprincipal['sub'] or old['issuer']!=newprincipal['issuer']:

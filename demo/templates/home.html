@@ -20,12 +20,12 @@
         <div class="monitor-card-top"><span class="monitor-brand">{{label}}</span><span class="monitor-state checking" data-status aria-live="polite">Verificando…</span></div>
         <div class="monitor-channel">{{channel_label}}</div>
         <p class="monitor-tenant">{{tenant}} · canal {{channel}}</p>
-        <div class="monitor-card-bottom"><span>Cliente OIDC dedicado</span><a href="http://localhost:{{port}}" rel="noreferrer">Abrir aplicação ↗</a></div>
+        <div class="monitor-card-bottom"><span>Cliente OIDC dedicado</span><a href="{{ storefront_urls[brand ~ ":" ~ channel] }}" rel="noreferrer">Abrir aplicação ↗</a></div>
       </article>
     {% endfor %}
   {% endfor %}
 </div>
-<div class="note"><b>Como funciona:</b> o painel consulta cada storefront utilizando apenas o cookie de sessão daquela aplicação, sem compartilhar tokens, permissões ou identidade entre marcas. O logout é sempre feito dentro da própria aplicação. Utilize <b>localhost</b> em todas as abas, não <code>127.0.0.1</code>.</div>
+<div class="note"><b>Como funciona:</b> o painel consulta cada storefront utilizando apenas o cookie de sessão daquela aplicação, sem compartilhar tokens, permissões ou identidade entre marcas. O logout é sempre feito dentro da própria aplicação. Abra as aplicações pelos links desta página, mantendo o mesmo hostname em todas as abas.</div>
 <section class="section-title"><div><span class="eyebrow">EVIDÊNCIAS DO RFP / SEÇÃO 7</span><h2>Validação técnica</h2></div></section>
 <div class="features">
 <article><span class="feature-n">7.2 / CONSENT V2</span><h3>Consentimento nativo WSO2 + Ledger</h3><p>Propósitos, consent records nativos, dupla validação e revogação verificada no WSO2.</p><a class="btn primary" href="/m3/native-consent">Abrir Native Consent &amp; Compliance →</a></article>

@@ -2,6 +2,24 @@
 import os
 from pathlib import Path
 
+def valid_public_host(hostname):
+    import ipaddress
+    import re
+
+    if not hostname:
+        return False
+
+    try:
+        address = ipaddress.ip_address(hostname)
+    except ValueError:
+        return re.fullmatch(
+            r'[a-z0-9-]+(?:[.][a-z0-9-]+)+',
+            hostname
+        ) is not None
+
+    return isinstance(address, ipaddress.IPv4Address) and address.is_global
+
+
 def main():
     mode=os.getenv('MAGALU_ENV_MODE','legacy')
     template=Path('docker/wso2/deployment.isolated.template.toml' if mode=='isolated' else 'docker/wso2/deployment.template.toml')
@@ -26,15 +44,12 @@ def main():
             and not parsed.path
             and not parsed.query
             and not parsed.fragment
-            and re.fullmatch(
-                r'[a-z0-9-]+(?:[.][a-z0-9-]+)+',
-                hostname
-            ) is not None
+            and valid_public_host(hostname)
         )
 
         if not valid:
             raise SystemExit(
-                'IS_PUBLIC_URL must be an HTTPS DNS origin '
+                'IS_PUBLIC_URL must be an HTTPS public DNS or IPv4 origin '
                 'without a port, path or credentials'
             )
 

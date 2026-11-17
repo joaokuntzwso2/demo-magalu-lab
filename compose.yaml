@@ -20,6 +20,12 @@ services:
     user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     environment:
       DEMO_PUBLIC_URL: ${DEMO_PUBLIC_URL:-http://localhost:8080}
+      MAGALU_WEB_URL: ${MAGALU_WEB_URL:-http://localhost:8181}
+      MAGALU_MOBILE_URL: ${MAGALU_MOBILE_URL:-http://localhost:8182}
+      NETSHOES_WEB_URL: ${NETSHOES_WEB_URL:-http://localhost:8183}
+      NETSHOES_MOBILE_URL: ${NETSHOES_MOBILE_URL:-http://localhost:8184}
+      PAY_WEB_URL: ${PAY_WEB_URL:-http://localhost:8185}
+      PAY_MOBILE_URL: ${PAY_MOBILE_URL:-http://localhost:8186}
       IS_PUBLIC_URL: ${IS_PUBLIC_URL:-https://localhost:9443}
       IS_INTERNAL_URL: ${IS_INTERNAL_URL:-https://host.docker.internal:9443}
       IS_TLS_VERIFY: ${IS_TLS_VERIFY:-false}

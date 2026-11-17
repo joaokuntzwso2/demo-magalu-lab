@@ -101,8 +101,15 @@ def test_legacy_8180_login_only_redirects_to_independent_storefronts():
 def test_dashboard_has_six_independent_cards_and_no_legacy_login_links():
     from jinja2 import Environment,FileSystemLoader
     env=Environment(loader=FileSystemLoader(str(ROOT/'demo/templates')))
+    from bootstrap.storefront_ports import FRONTEND_PORTS
+
+    storefront_urls = {
+        key: f'http://localhost:{port}'
+        for key, port in FRONTEND_PORTS.items()
+    }
+
     rendered=env.get_template('home.html').render(brand=None,manifest={},session={},csrf='test',
-        request={'url':{'path':'/'}})
+        request={'url':{'path':'/'}}, storefront_urls=storefront_urls)
     assert rendered.count('data-session-key=')==6
     assert '/auth/start/' not in rendered
     assert 'api/storefront-status' in rendered
