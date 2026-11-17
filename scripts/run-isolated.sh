@@ -62,4 +62,3 @@ if [[ "${1:-}" == '--with-storefronts' ]]; then
   docker compose -p "$name" "${files[@]}" \
     -f compose.frontends.yaml ps
 fi
-
