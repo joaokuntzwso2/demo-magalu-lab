@@ -9,7 +9,12 @@ services:
       LDAP_TLS: "false"
     command: "--copy-service"
     volumes:
+      - ldap-data:/var/lib/ldap
+      - ldap-config:/etc/ldap/slapd.d
       - ./generated/poc-ldap/50-seller.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-seller.ldif:ro
     ports:
       - "127.0.0.1:1389:389"
     networks: [poc]
+volumes:
+  ldap-data: {}
+  ldap-config: {}
