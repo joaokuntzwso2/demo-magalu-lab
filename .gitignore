@@ -189,3 +189,5 @@ terraform.rc
 /deployment.agentidentity.toml
 
 /.env.example
+/SELLERLDAP.xml
+/docker/ldap/seed-users.ldif

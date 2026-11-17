@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-PROJECT='/Users/joaoluiskuntz/wso2mi/Projects/Demo/magalu-ciam-is73-poc'
+PROJECT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 cd "$PROJECT"
 [[ "$(git rev-parse --show-toplevel)" == "$PROJECT" ]] || { echo 'Wrong Git root'; exit 1; }
 private='generated/poc-ldap'

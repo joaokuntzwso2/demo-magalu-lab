@@ -9,7 +9,7 @@ services:
       LDAP_TLS: "false"
     command: "--copy-service"
     volumes:
-      - ./docker/ldap/seed-users.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-seller.ldif:ro
+      - ./generated/poc-ldap/50-seller.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-seller.ldif:ro
     ports:
       - "127.0.0.1:1389:389"
     networks: [poc]

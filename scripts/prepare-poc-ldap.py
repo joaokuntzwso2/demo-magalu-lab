@@ -11,7 +11,7 @@ import secrets
 import os
 import argparse
 
-ROOT=Path('/Users/joaoluiskuntz/wso2mi/Projects/Demo/magalu-ciam-is73-poc')
+ROOT=Path(__file__).resolve().parents[1]
 
 def json_quoted(x):
     return json.dumps(x)
