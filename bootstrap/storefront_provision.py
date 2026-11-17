@@ -146,9 +146,10 @@ def _registered_callbacks(previous, callback, *, legacy_callback=None):
     """
     if not isinstance(previous, list) or any(not isinstance(x, str) for x in previous):
         raise RuntimeError('Unexpected WSO2 callbackURLs response shape')
-    if not isinstance(callback, str) or not re.fullmatch(
-            r'http://localhost:818[1-6]/callback', callback):
+    if callback not in {callback_uri(key) for key in FRONTEND_PORTS}:
         raise RuntimeError('Refusing non-allowlisted storefront callback: '+str(callback))
+    if previous == [callback]:
+        return [callback]
     legacy_callback=legacy_callback or (
         os.environ.get('DEMO_PUBLIC_URL', 'http://localhost:8180').rstrip('/')
         + '/oidc/callback')
@@ -169,8 +170,6 @@ def _registered_callbacks(previous, callback, *, legacy_callback=None):
     if not previous:
         raise RuntimeError('Existing OAuth client has no registered callback; '
                            'review before modifying')
-    if previous==[callback]:
-        return [callback]  # standalone storefront client needs no regex
     # Preserve the previously registered original portal callback.
     return [anchored]
 

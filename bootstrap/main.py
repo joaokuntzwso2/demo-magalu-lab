@@ -13,6 +13,7 @@ import sys
 from urllib.parse import quote
 
 from bootstrap.topology import ROOT_TENANTS, BRANDS, PURPOSES
+from bootstrap.storefront_ports import callback_uri
 from bootstrap.credential_store import stable_user_passwords
 from bootstrap.app_naming import application_name
 from bootstrap.wso2 import WSO2, WSO2Error
@@ -111,7 +112,7 @@ def main():
             brands[brand]=b
             for channel in ('web','app'):
                 key=f'{brand}:{channel}'
-                redirect=demo+'/oidc/callback'
+                redirect=callback_uri(key)
                 result=api.ensure_app(
                     application_name(brand, channel),
                     ['authorization_code','refresh_token'],redirect,b['sector_uri'],

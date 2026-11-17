@@ -67,6 +67,12 @@ services:
       IS_TLS_VERIFY: ${IS_TLS_VERIFY:-false}
       IS_EXPECTED_UPDATE_LEVEL: ${IS_EXPECTED_UPDATE_LEVEL:-18}
       DEMO_PUBLIC_URL: ${DEMO_PUBLIC_URL:-http://localhost:8080}
+      MAGALU_WEB_URL: ${MAGALU_WEB_URL:-http://localhost:8181}
+      MAGALU_MOBILE_URL: ${MAGALU_MOBILE_URL:-http://localhost:8182}
+      NETSHOES_WEB_URL: ${NETSHOES_WEB_URL:-http://localhost:8183}
+      NETSHOES_MOBILE_URL: ${NETSHOES_MOBILE_URL:-http://localhost:8184}
+      PAY_WEB_URL: ${PAY_WEB_URL:-http://localhost:8185}
+      PAY_MOBILE_URL: ${PAY_MOBILE_URL:-http://localhost:8186}
       SECTOR_URI_ROOT_TEMPLATE: ${SECTOR_URI_ROOT_TEMPLATE:?Set SECTOR_URI_ROOT_TEMPLATE in .env}
       CONSENT_DB_DSN: ${CONSENT_DB_DSN:-postgresql://ciam:ciam_dev_only@db:5432/ciam}
       MANIFEST_FILE: /project/generated/manifest.json
